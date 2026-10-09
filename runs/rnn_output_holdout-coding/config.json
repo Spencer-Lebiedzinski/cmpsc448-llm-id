@@ -1,0 +1,46 @@
+{
+  "model": "rnn",
+  "input_mode": "output",
+  "data_dir": "C:\\Users\\spenc\\OneDrive\\Desktop\\Penn State Schoolwork\\CMPSC448-Midterm-Project\\data\\processed",
+  "run_name": "rnn_output_holdout-coding",
+  "runs_dir": "C:\\Users\\spenc\\OneDrive\\Desktop\\Penn State Schoolwork\\CMPSC448-Midterm-Project\\runs",
+  "max_len": 400,
+  "max_input_len": 100,
+  "min_freq": 2,
+  "max_vocab": 30000,
+  "subset": 0,
+  "ablation": "none",
+  "train_domains": [
+    "math",
+    "writing",
+    "general"
+  ],
+  "test_domains": [
+    "coding"
+  ],
+  "emb_dim": 128,
+  "num_filters": 128,
+  "kernel_sizes": [
+    3,
+    4,
+    5
+  ],
+  "hidden_dim": 128,
+  "num_layers": 1,
+  "unidirectional": false,
+  "dropout": 0.5,
+  "epochs": 10,
+  "batch_size": 64,
+  "lr": 0.001,
+  "weight_decay": 0.0001,
+  "patience": 3,
+  "seed": 42,
+  "threads": 0,
+  "train_n": 13948,
+  "val_n": 1712,
+  "device": "cuda",
+  "n_params": 4106757,
+  "epochs_run": 10,
+  "best_epoch": 10,
+  "best_val_macro_f1": 0.6226849347654433
+}

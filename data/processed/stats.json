@@ -1,0 +1,117 @@
+{
+  "args": {
+    "source": "arena55k",
+    "families": "GPT,Claude,Google,Llama,Mistral",
+    "per_class": 4000,
+    "min_output_chars": 20,
+    "min_ascii_ratio": 0.9,
+    "seed": 42
+  },
+  "filtering": {
+    "raw_examples": 114954,
+    "after_family_filter": 70912,
+    "after_empty_short_filter": 69512,
+    "after_ascii_filter": 69175,
+    "after_dedupe": 67834,
+    "per_class": 4000,
+    "after_balance": 20000
+  },
+  "family_counts_before_balance": {
+    "GPT": 29915,
+    "Claude": 15529,
+    "Llama": 9585,
+    "Mistral": 8471,
+    "Google": 4334
+  },
+  "family_by_split": {
+    "test": {
+      "Claude": 393,
+      "GPT": 395,
+      "Google": 411,
+      "Llama": 378,
+      "Mistral": 384
+    },
+    "train": {
+      "Claude": 3228,
+      "GPT": 3223,
+      "Google": 3188,
+      "Llama": 3196,
+      "Mistral": 3222
+    },
+    "val": {
+      "Claude": 379,
+      "GPT": 382,
+      "Google": 401,
+      "Llama": 426,
+      "Mistral": 394
+    }
+  },
+  "family_by_domain": {
+    "coding": {
+      "Claude": 545,
+      "GPT": 526,
+      "Google": 516,
+      "Llama": 536,
+      "Mistral": 486
+    },
+    "general": {
+      "Claude": 2585,
+      "GPT": 2574,
+      "Google": 2612,
+      "Llama": 2580,
+      "Mistral": 2625
+    },
+    "math": {
+      "Claude": 336,
+      "GPT": 359,
+      "Google": 288,
+      "Llama": 302,
+      "Mistral": 337
+    },
+    "writing": {
+      "Claude": 534,
+      "GPT": 541,
+      "Google": 584,
+      "Llama": 582,
+      "Mistral": 552
+    }
+  },
+  "models_per_family": {
+    "Claude": {
+      "claude-2.1": 1375,
+      "claude-instant-1": 1044,
+      "claude-1": 995,
+      "claude-2.0": 586
+    },
+    "GPT": {
+      "gpt-4-1106-preview": 959,
+      "gpt-3.5-turbo-0613": 862,
+      "gpt-4-0613": 791,
+      "gpt-4-0314": 529,
+      "gpt-3.5-turbo-1106": 416,
+      "gpt-3.5-turbo-0314": 172,
+      "gpt-4-0125-preview": 167,
+      "gpt-3.5-turbo-0125": 104
+    },
+    "Google": {
+      "palm-2": 1675,
+      "gemini-pro-dev-api": 1232,
+      "gemini-pro": 1093
+    },
+    "Llama": {
+      "llama-2-70b-chat": 1383,
+      "llama-2-13b-chat": 1034,
+      "llama-2-7b-chat": 723,
+      "codellama-34b-instruct": 639,
+      "llama-13b": 221
+    },
+    "Mistral": {
+      "mixtral-8x7b-instruct-v0.1": 1637,
+      "mistral-medium": 1558,
+      "mistral-7b-instruct": 757,
+      "mistral-7b-instruct-v0.2": 48
+    }
+  },
+  "unique_prompts": 17254,
+  "prompt_overlap_between_splits": 0
+}

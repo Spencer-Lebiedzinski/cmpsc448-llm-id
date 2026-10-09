@@ -1,0 +1,11 @@
+              precision    recall  f1-score   support
+
+      Claude       0.94      0.86      0.90       393
+         GPT       0.65      0.45      0.53       395
+      Google       0.55      0.82      0.66       411
+       Llama       0.63      0.55      0.59       378
+     Mistral       0.47      0.46      0.47       384
+
+    accuracy                           0.63      1961
+   macro avg       0.65      0.63      0.63      1961
+weighted avg       0.65      0.63      0.63      1961

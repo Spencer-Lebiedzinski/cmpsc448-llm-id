@@ -1,0 +1,54 @@
+[train] cnn_output: train=4000 val=800 labels=['Claude', 'GPT', 'Google', 'Llama', 'Mistral'] vocab=20855 (encode 1.3s)
+[train] epoch 1: loss=2.1084 val_acc=0.3187 val_f1=0.2323 (10.3s)
+[train] epoch 2: loss=1.8299 val_acc=0.3925 val_f1=0.3078 (10.4s)
+[train] epoch 3: loss=1.6269 val_acc=0.4200 val_f1=0.3733 (14.6s)
+[train] best epoch 3 (val macro-F1 0.3733); results: {"test": {"n": 1333, "accuracy": 0.4584, "macro_f1": 0.4071}}
+[train] rnn_output: train=4000 val=800 labels=['Claude', 'GPT', 'Google', 'Llama', 'Mistral'] vocab=20855 (encode 1.5s)
+[train] epoch 1: loss=1.5465 val_acc=0.4188 val_f1=0.3869 (135.7s)
+[train] epoch 2: loss=1.3920 val_acc=0.4537 val_f1=0.4475 (133.5s)
+[train] epoch 3: loss=1.3244 val_acc=0.4387 val_f1=0.4104 (92.8s)
+[train] best epoch 2 (val macro-F1 0.4475); results: {"test": {"n": 1333, "accuracy": 0.4524, "macro_f1": 0.4506}}
+[train] cnn_input: train=4000 val=800 labels=['Claude', 'GPT', 'Google', 'Llama', 'Mistral'] vocab=9161 (encode 1.1s)
+[train] epoch 1: loss=1.9601 val_acc=0.1988 val_f1=0.1585 (9.3s)
+[train] epoch 2: loss=1.7770 val_acc=0.2037 val_f1=0.1725 (9.3s)
+[train] epoch 3: loss=1.7219 val_acc=0.2188 val_f1=0.2054 (9.9s)
+[train] best epoch 3 (val macro-F1 0.2054); results: {"test": {"n": 1333, "accuracy": 0.192, "macro_f1": 0.1815}}
+[train] cnn_both: train=4000 val=800 labels=['Claude', 'GPT', 'Google', 'Llama', 'Mistral'] vocab=22144 (encode 1.4s)
+[train] epoch 1: loss=2.1044 val_acc=0.3125 val_f1=0.2587 (10.3s)
+[train] epoch 2: loss=1.8050 val_acc=0.4000 val_f1=0.3668 (11.0s)
+[train] epoch 3: loss=1.6170 val_acc=0.4562 val_f1=0.4384 (10.9s)
+[train] best epoch 3 (val macro-F1 0.4384); results: {"test": {"n": 1333, "accuracy": 0.4614, "macro_f1": 0.4367}}
+[train] cnn_output_rq3: train=4000 val=800 labels=['Claude', 'GPT', 'Google', 'Llama', 'Mistral'] vocab=20150 (encode 1.4s)
+[train] epoch 1: loss=2.1131 val_acc=0.3975 val_f1=0.3501 (10.0s)
+[train] epoch 2: loss=1.8462 val_acc=0.3862 val_f1=0.3338 (11.4s)
+[train] epoch 3: loss=1.6202 val_acc=0.4425 val_f1=0.3891 (10.9s)
+[train] best epoch 3 (val macro-F1 0.3891); results: {"test_ood": {"n": 201, "accuracy": 0.3731, "macro_f1": 0.3179}, "test_indomain": {"n": 1132, "accuracy": 0.4488, "macro_f1": 0.3984}}
+family                     Claude     GPT  Google    Llama  Mistral
+n_chars                   1061.50  982.50  960.50  1253.00  1048.00
+n_words                    164.50  153.00  154.00   203.00   170.00
+avg_word_len                 4.91    4.93    4.71     4.76     4.80
+avg_sent_len_words          16.28   17.00   15.44    17.00    18.67
+ttr                          0.59    0.59    0.53     0.51     0.55
+windowed_ttr                 0.80    0.79    0.75     0.76     0.76
+n_lines                     13.00   10.00   11.00    10.00     9.00
+frac_bullet_lines            0.00    0.00    0.00     0.00     0.00
+n_headers                    0.00    0.00    0.00     0.00     0.00
+n_bold                       0.00    0.00    0.00     0.00     0.00
+n_code_blocks                0.00    0.00    0.00     0.00     0.00
+n_exclaim                    0.00    0.00    0.00     0.00     0.00
+n_question                   0.00    0.00    0.00     0.00     0.00
+n_emoji                      0.00    0.00    0.00     0.00     0.00
+has_apology_refusal          0.00    0.00    0.00     0.00     0.00
+mentions_vendor_or_model     0.00    0.00    0.00     0.00     0.00
+{
+  "features_only_logreg_test_accuracy": 0.409484956654768,
+  "features_only_logreg_test_macro_f1": 0.40077244975284776,
+  "n_test": 1961
+}
+           run          eval model input_mode ablation       train_domains  train_n  epochs  n_eval  accuracy  macro_f1
+      cnn_both          test   cnn       both     none                 all     4000       3    1333    0.4614    0.4367
+     cnn_input          test   cnn      input     none                 all     4000       3    1333    0.1920    0.1815
+    cnn_output          test   cnn     output     none                 all     4000       3    1333    0.4584    0.4071
+cnn_output_rq3 test_indomain   cnn     output     none coding,math,general     4000       3    1132    0.4488    0.3984
+cnn_output_rq3      test_ood   cnn     output     none coding,math,general     4000       3     201    0.3731    0.3179
+    rnn_output          test   rnn     output     none                 all     4000       3    1333    0.4524    0.4506

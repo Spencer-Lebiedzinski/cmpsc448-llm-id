@@ -1,0 +1,15 @@
+# CPU build of PyTorch is fine for this project. For CPU-only wheels:
+#   pip install torch --index-url https://download.pytorch.org/whl/cpu
+torch>=2.2
+numpy>=1.26
+pandas>=2.1
+pyarrow>=14
+scikit-learn>=1.4
+matplotlib>=3.8
+seaborn>=0.13
+tqdm>=4.66
+requests>=2.31
+huggingface_hub>=0.23
+tabulate
+scipy
+markdown

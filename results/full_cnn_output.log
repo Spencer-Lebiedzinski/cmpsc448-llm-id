@@ -1,0 +1,10 @@
+[train] cnn_output: train=16057 val=1982 labels=['Claude', 'GPT', 'Google', 'Llama', 'Mistral'] vocab=30000 (encode 5.7s)
+[train] epoch 1: loss=1.8165 val_acc=0.4011 val_f1=0.3224 (43.1s)
+[train] epoch 2: loss=1.4213 val_acc=0.4667 val_f1=0.4217 (40.8s)
+[train] epoch 3: loss=1.3192 val_acc=0.4586 val_f1=0.4150 (40.7s)
+[train] epoch 4: loss=1.2755 val_acc=0.5520 val_f1=0.5346 (39.7s)
+[train] epoch 5: loss=1.2254 val_acc=0.5570 val_f1=0.5552 (41.4s)
+[train] epoch 6: loss=1.1992 val_acc=0.5535 val_f1=0.5450 (43.5s)
+[train] epoch 7: loss=1.1691 val_acc=0.5772 val_f1=0.5672 (40.1s)
+[train] epoch 8: loss=1.1459 val_acc=0.5913 val_f1=0.5686 (48.1s)
+[train] best epoch 8 (val macro-F1 0.5686); results: {"test": {"n": 1961, "accuracy": 0.6232, "macro_f1": 0.5956}}

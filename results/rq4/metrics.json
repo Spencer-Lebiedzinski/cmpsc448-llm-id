@@ -1,0 +1,5 @@
+{
+  "features_only_logreg_test_accuracy": 0.409484956654768,
+  "features_only_logreg_test_macro_f1": 0.40077244975284776,
+  "n_test": 1961
+}
