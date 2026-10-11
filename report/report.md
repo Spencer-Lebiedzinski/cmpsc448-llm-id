@@ -2,7 +2,7 @@
 CMPSC 448 Midterm Project Report (Fall 2026)
 
 **Team leader:** Spencer Lebiedzinski. **Team members:** _TODO: list everyone, or write "individual project"_
-**Repository:** _TODO: GitHub URL_
+**Repository:** https://github.com/Spencer-Lebiedzinski/cmpsc448-llm-id
 
 ---
 
