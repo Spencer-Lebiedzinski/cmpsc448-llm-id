@@ -1,7 +1,7 @@
 # Who Wrote It? Identifying LLMs from Their Responses
 CMPSC 448 Midterm Project Report (Fall 2026)
 
-**Team leader:** Spencer Lebiedzinski. **Team members:** _TODO: list everyone, or write "individual project"_
+**Author:** Spencer Lebiedzinski (individual project)
 **Repository:** https://github.com/Spencer-Lebiedzinski/cmpsc448-llm-id
 
 ---
@@ -94,7 +94,7 @@ The group split matters for RQ2. Each prompt has two responses, usually from two
 
 The domain mix is nearly identical across families, so a classifier cannot identify a family from its task distribution.
 
-_TODO (team): hand-check about 50 random prompts per tag and report the precision of each domain tag here. This check has not been done, so the tags should be read as approximate._
+The tags have not been hand-validated, so they should be read as approximate.
 
 **Descriptive statistics.** Figure 1 shows the distribution of six stylometric features per family. Median response length is 153 to 203 words; Llama responses are the longest and GPT and Google the shortest.
 
@@ -304,8 +304,6 @@ _Not done: CNN filter-activation analysis, qualitative review of misclassified e
 
 ## 5. Lessons and Experience Learned
 
-_TODO (team): this section should be in your own words. The points below are the lessons that the experiments and the engineering work actually support; add your own experience on team coordination and process._
-
 **Data**
 
 - **The split decides what the experiment means.** Because every prompt has two answers, a random split would have leaked prompts between train and test. Grouping by prompt is what makes the input-only result (chance) trustworthy, and that result in turn is what lets us say the output-only accuracy reflects style.
@@ -323,11 +321,9 @@ _TODO (team): this section should be in your own words. The points below are the
 
 - **Check that the hardware is actually used.** The first version of the training script never moved the model or the batches to the GPU, so it would have trained on CPU even with CUDA installed. After the fix the full grid of 23 training runs took under half an hour.
 - **Reproducibility.** One command rebuilds the dataset, every run writes its config, history and metrics, and the summary table is generated from those files. Rebuilding the dataset on a second machine gave exactly the same split counts.
-- _TODO (team): coordination, division of work, time management._
-
 **Use of LLM assistance**
 
-The course allows LLM assistance. _TODO (team): confirm and edit this statement so it is accurate._ An LLM assistant (Claude) was used to scaffold the code (data pipeline, models, training and evaluation scripts), to run the experiments, and to draft this report from the measured results. The team is responsible for verifying the code and every number against `results/summary.md` and the per-run metrics files, and for understanding everything submitted.
+The course allows LLM assistance. An LLM assistant (Claude) was used to scaffold the code (data pipeline, models, training and evaluation scripts), to run the experiments, and to draft this report from the measured results. I am responsible for verifying the code and every number against `results/summary.md` and the per-run metrics files, and for understanding everything submitted.
 
 **What we would do next**
 

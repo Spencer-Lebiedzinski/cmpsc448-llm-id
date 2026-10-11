@@ -1,7 +1,7 @@
 # Who Wrote It? Identifying LLMs from Their Responses
 CMPSC 448 Midterm Project (due **Sun Oct 11, 2026, 11:59pm ET**)
 
-**Team leader:** Spencer Lebiedzinski. **Members:** _TBD_
+**Author:** Spencer Lebiedzinski (individual project)
 
 We classify which **LLM family** (GPT, Claude, Google, Llama, Mistral) wrote a chatbot response,
 using a **Text CNN** and a **BiLSTM (RNN)** implemented in PyTorch. The two models share one tokenizer and vocabulary.
