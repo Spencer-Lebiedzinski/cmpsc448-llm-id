@@ -5,7 +5,9 @@ signals* (newlines -> <nl>, markdown markers like ``` ** ##) because formatting 
 part of an LLM's "fingerprint" (RQ4). Ablations let you remove signals to measure
 how much the classifier depends on them.
 """
+import hashlib
 import json
+import random
 import re
 from collections import Counter
 from typing import Dict, Iterable, List
@@ -46,12 +48,31 @@ def strip_format(text: str) -> str:
     return " ".join(MD_RE.sub(" ", text).split())
 
 
+WORD_ONLY_RE = re.compile(r"[A-Za-z']+")
+
+
+def words_only(text: str) -> str:
+    """Keep only words: no punctuation, digits, markdown or line breaks (pure word choice)."""
+    return " ".join(WORD_ONLY_RE.findall(text))
+
+
+def shuffle_words(text: str) -> str:
+    """Same bag of whitespace tokens in a random (but deterministic per text) order."""
+    toks = text.split()
+    random.Random(hashlib.md5(text.encode("utf-8")).hexdigest()).shuffle(toks)
+    return " ".join(toks)
+
+
 def apply_ablations(text: str, ablations: Iterable[str]) -> str:
     for a in ablations:
         if a == "mask_identity":
             text = mask_identity(text)
         elif a == "strip_format":
             text = strip_format(text)
+        elif a == "words_only":
+            text = words_only(text)
+        elif a == "shuffle_words":
+            text = shuffle_words(text)
         elif a in ("", "none") or a.startswith("truncate"):
             pass  # truncateN is applied at token level (see encode_example)
         else:

@@ -25,6 +25,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import seaborn as sns
+from sklearn.ensemble import HistGradientBoostingClassifier
+from sklearn.inspection import permutation_importance
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, f1_score
 from sklearn.pipeline import make_pipeline
@@ -68,6 +70,8 @@ def features(text: str) -> dict:
         "n_emoji": len(EMOJI_RE.findall(text)),
         "has_apology_refusal": int(bool(APOLOGY_RE.search(text))),
         "mentions_vendor_or_model": int(bool(IDENTITY_RE.search(text))),
+        "n_em_dash": text.count("\u2014"),
+        "curly_apostrophe_share": text.count("\u2019") / max(1, text.count("\u2019") + text.count("'")),
     }
 
 
@@ -105,6 +109,15 @@ def main():
     res = {"features_only_logreg_test_accuracy": float(accuracy_score(y, pred)),
            "features_only_logreg_test_macro_f1": float(f1_score(y, pred, average="macro")),
            "n_test": int(len(y))}
+    # nonlinear model on the same features (feature counts interact, e.g. bold only matters for long answers)
+    gb = HistGradientBoostingClassifier(max_iter=300, learning_rate=0.08, random_state=42)
+    gb.fit(feats["train"], splits["train"]["family"])
+    gpred = gb.predict(feats["test"])
+    res["features_only_gboost_test_accuracy"] = float(accuracy_score(y, gpred))
+    res["features_only_gboost_test_macro_f1"] = float(f1_score(y, gpred, average="macro"))
+    imp = permutation_importance(gb, feats["test"], y, n_repeats=5, random_state=42, scoring="accuracy")
+    res["gboost_permutation_importance"] = dict(sorted(
+        zip(feats["test"].columns, imp.importances_mean.round(4).tolist()), key=lambda kv: -kv[1]))
     lr = clf[-1]
     coefs = pd.DataFrame(lr.coef_, index=lr.classes_, columns=feats["train"].columns).T
     (out / "logreg_coefficients.md").write_text(

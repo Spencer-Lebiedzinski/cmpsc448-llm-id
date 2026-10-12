@@ -11,7 +11,8 @@ using a **Text CNN** and a **BiLSTM (RNN)** implemented in PyTorch. The two mode
 | RQ1 | Identify the LLM from its output | `--input_mode output` for `cnn` and `rnn` |
 | RQ2 | Input only vs output only vs input + output | `--input_mode input / output / both` |
 | RQ3 (+5) | Cross-domain generalization | `--train_domains coding,math,general --test_domains writing` |
-| RQ4 (+5) | What distinguishes LLMs? | `src/analysis/stylometry.py`, plus `--ablation mask_identity / strip_format / truncate64` |
+| RQ4 (+5) | What distinguishes LLMs? | `src/analysis/stylometry.py`, plus `--ablation mask_identity / strip_format / truncate64 / words_only / shuffle_words` |
+| Check | Same study on 2025 models (8 families), report Section 4.4 | `extension_2025/` (see its README) |
 
 ## Setup
 ```bash
@@ -35,6 +36,8 @@ python -m src.train --model rnn --input_mode output --threads 4 # RQ1 BiLSTM
 python -m src.train --model cnn --input_mode input              # RQ2
 python -m src.train --model cnn --input_mode both               # RQ2
 python -m src.train --model cnn --input_mode output --train_domains coding,math,general --test_domains writing  # RQ3
+python -m src.train --model cnn --input_mode output --subset 13819 --run_name cnn_output_reference-writing      # RQ3 same-size reference
+python -m src.eval  --run_dir runs/cnn_output_reference-writing --domains writing --tag test_ood
 python -m src.train --model cnn --input_mode output --ablation mask_identity,strip_format                     # RQ4
 python -m src.eval  --run_dir runs/cnn_output --domains coding  # re-evaluate a run on a subset
 python -m src.eval  --summarize runs                            # results/summary.md table of every run

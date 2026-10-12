@@ -102,7 +102,7 @@ The tags have not been hand-validated, so they should be read as approximate.
 
 ### 1.4 Limitations of the data
 
-- **Era bias.** All models date from 2023 to early 2024. The fingerprints we learn may not transfer to current models.
+- **Era bias.** All models date from 2023 to early 2024. The fingerprints we learn may not transfer to current models. Section 4.4 checks this on 2025 models.
 - **Pooled versions.** Each family pools several models (for example GPT-3.5 and GPT-4, or PaLM 2 and Gemini Pro) whose styles differ, which makes each class heterogeneous.
 - **Sampling windows.** Families were live on Arena during different periods (Gemini Pro only arrived in December 2023), so prompt topics could in principle leak family information. RQ2 tests this directly.
 - **Self-identification.** A small share of responses name their vendor ("As an AI developed by OpenAI"). RQ4 measures how much this matters.
@@ -153,7 +153,7 @@ Total parameters: **4,106,757**. Packing the sequences means the LSTM never read
 - **Loss and optimizer**: cross-entropy, AdamW (learning rate 1e-3, weight decay 1e-4), batch size 64, gradient-norm clipping at 1.0.
 - **Schedule**: up to 10 epochs, early stopping on validation macro-F1 with patience 3. The checkpoint with the best validation macro-F1 is the one evaluated on test.
 - **Seeds**: the RQ1 and RQ2 runs and the RQ4 ablations were each run with three seeds (42, 43, 44); tables for those report the mean ± sample standard deviation. The RQ3 runs, per-class scores, confusion matrices and training curves are from seed 42 only.
-- **Hardware**: one NVIDIA RTX 3080 (10 GB), PyTorch 2.5.1 with CUDA 12.1. On the full training set the CNN takes about 2.2 s per epoch and the BiLSTM about 9.9 s per epoch.
+- **Hardware**: one NVIDIA RTX 3080 (10 GB), PyTorch 2.5.1 with CUDA 12.1. On the full training set the CNN takes about 2.2 s per epoch and the BiLSTM about 9.9 s per epoch. The RQ3 reference runs and the two extra ablations in Section 4.2 were run later on an Apple M-series GPU (PyTorch MPS backend, selected automatically by `src/train.py`) with the same settings and seed 42.
 - **Hyperparameter search**: none. Both models use the default settings above, chosen in advance as conventional values. The numbers in this report are therefore untuned.
 
 Figure 2 shows the training curves for the two output-only models. The CNN's best validation epoch was 6 of 9 and the BiLSTM's was 7 of 10. The BiLSTM's training loss keeps falling (to 0.78) while its validation F1 plateaus near 0.60, which is the start of overfitting; the CNN's loss falls more slowly (to 1.11) and its validation F1 is noisier from epoch to epoch.
@@ -216,20 +216,22 @@ Test accuracy (mean ± standard deviation over three seeds for the neural models
 
 For each domain we train on the other three and evaluate the same model on test examples from the training domains (in-domain) and from the held-out domain (out-of-domain). These runs use seed 42 only. Accuracy, with macro-F1 in parentheses:
 
-| Held-out domain | OOD test n | CNN in-domain | CNN OOD | BiLSTM in-domain | BiLSTM OOD |
-|---|---:|---:|---:|---:|---:|
-| Writing | 294 | 0.645 (0.638) | 0.554 (0.546) | 0.652 (0.631) | 0.527 (0.496) |
-| Coding | 230 | 0.620 (0.602) | 0.587 (0.537) | 0.630 (0.630) | 0.587 (0.555) |
-| Math | 145 | 0.616 (0.596) | 0.510 (0.495) | 0.626 (0.633) | 0.641 (0.639) |
-| General | 1,292 | 0.576 (0.557) | 0.550 (0.546) | 0.537 (0.521) | 0.497 (0.500) |
+| Held-out domain | OOD test n | CNN in-domain | CNN OOD | CNN reference (saw the domain) | BiLSTM in-domain | BiLSTM OOD |
+|---|---:|---:|---:|---:|---:|---:|
+| Writing | 294 | 0.645 (0.638) | 0.554 (0.546) | 0.551 (0.557) | 0.652 (0.631) | 0.527 (0.496) |
+| Coding | 230 | 0.620 (0.602) | 0.587 (0.537) | 0.626 (0.603) | 0.630 (0.630) | 0.587 (0.555) |
+| Math | 145 | 0.616 (0.596) | 0.510 (0.495) | 0.552 (0.526) | 0.626 (0.633) | 0.641 (0.639) |
+| General | 1,292 | 0.576 (0.557) | 0.550 (0.546) | 0.594 (0.595) | 0.537 (0.521) | 0.497 (0.500) |
+
+**Reference control.** Comparing "in-domain" with "OOD" mixes two effects: not having seen the domain, and the held-out domain simply being harder. To separate them, we trained a CNN reference for each holdout on a stratified random subset of the full training set, with the same number of examples as the holdout run (`--subset`), so it does see the held-out domain. We then evaluated it on the same OOD test rows (`runs/cnn_output_reference-<domain>/`). The cost of never seeing a domain is the reference column minus the CNN OOD column.
 
 The out-of-domain test sets are small (145 to 294 examples for three of the four domains, about ±6 to 8 points), so individual cells are noisy. The general holdout also trains on only 5,648 examples instead of about 14,000, which lowers both of its columns.
 
-**(i) Performance usually drops on an unseen domain, but stays far above chance.** In seven of the eight model and domain pairs out-of-domain accuracy is lower, by 2 to 13 points. The one exception (BiLSTM on math) is on the smallest test set and is within noise. The worst out-of-domain result is still about 50%, two and a half times chance.
+**(i) Performance usually drops on an unseen domain, but stays far above chance.** In seven of the eight model and domain pairs out-of-domain accuracy is lower than in-domain, by 2 to 13 points. The one exception (BiLSTM on math) is on the smallest test set and is within noise. The worst out-of-domain result is still about 50%, two and a half times chance. The reference control shows that part of this gap is about the domain itself rather than generalization. For coding, math and general, the CNN that saw the domain is about 4 points better (3.9, 4.1 and 4.4 points). For writing there is no cost at all: the reference reaches 0.551 against 0.554 for the model that never saw writing. Writing is simply a harder domain to attribute, whether or not it was in training.
 
 **(ii) Claude stays identifiable; Mistral does not.** Claude's out-of-domain F1 is between 0.71 and 0.88 in every holdout. Mistral is the least stable family: its out-of-domain F1 falls to 0.22 for the CNN on coding and math and to 0.09 for the BiLSTM on writing.
 
-**(iii) The models learn a mostly general fingerprint with a task-specific component.** Retaining 50 to 59% accuracy on a domain never seen in training means most of the signal is domain-independent style. The consistent drop means some of what the models learn is tied to the task. Writing shows the largest consistent drop for both models, which fits the intuition that creative writing changes a model's surface style more than coding or factual answers do.
+**(iii) The models learn a mostly general fingerprint with a task-specific component.** Retaining 50 to 59% accuracy on a domain never seen in training means most of the signal is domain-independent style. The consistent drop means some of what the models learn is tied to the task. Writing shows the largest raw drop for both models, but the reference control shows that this drop comes from writing being harder to attribute in general, not from a failure to transfer. A plausible reason is that creative prompts ask for a specific voice (a poem, a story), which overrides each model's usual style for everyone, including models that trained on writing. The true transfer cost is a consistent but modest 4 points on the other three domains.
 
 ---
 
@@ -262,7 +264,7 @@ What stands out:
 - **Claude refuses or apologizes most often** (11.7% of responses) and Google least (3.4%).
 - **Self-identification is rare.** Under 1% of responses in any family mention a vendor or model name.
 
-**How much does style alone explain?** A logistic regression on only these 16 features reaches **0.409 accuracy (0.401 macro-F1)**. That is twice chance, and about half of the gap between chance and the neural models (0.62). So coarse style counts carry real signal, but most of what the CNN and BiLSTM use is lexical. The largest standardized coefficients match the table: bold count is the strongest positive feature for Google (+0.90) and strongly negative for Claude (-0.71) and Llama (-0.66); type-token ratio is positive for Claude and GPT (about +0.7) and strongly negative for Llama (-1.04); line count is positive for Claude (+0.67).
+**How much does style alone explain?** A logistic regression on only the 16 features above reaches **0.409 accuracy (0.401 macro-F1)**, twice chance (0.408 with the two new features below). A linear model undersells the features, because they interact: for example, bold only means something relative to length and line count. A gradient-boosted tree classifier (`HistGradientBoostingClassifier`, 300 iterations) on the same features reaches **0.534 accuracy (0.530 macro-F1)**. That closes about 80% of the gap between chance and the neural models (0.62). So coarse structural counts carry most of the signal, and the words add the last 9 points. By permutation importance the most useful features for the boosted model are line count (0.099), share of bullet lines (0.092), bold count (0.077), word count (0.064) and sentence length (0.059). We also added two typography features that turned out to be strong cues for 2025 models (Section 4.4): em dashes and the share of typographic apostrophes (’). In this 2023-24 data they are almost never used and contribute nothing (importance below 0.004). The largest standardized coefficients match the table: bold count is the strongest positive feature for Google (+0.90) and strongly negative for Claude (-0.71) and Llama (-0.66); type-token ratio is positive for Claude and GPT (about +0.7) and strongly negative for Llama (-1.04); line count is positive for Claude (+0.67).
 
 ### 4.2 Ablations
 
@@ -275,11 +277,16 @@ We retrained each model with a signal removed from the text. Test accuracy, mean
 | Markdown and newlines stripped | 0.507 ± 0.042 | 0.555 ± 0.028 |
 | Names masked and formatting stripped | 0.542 ± 0.014 | 0.556 ± 0.023 |
 | First 64 tokens only | 0.524 ± 0.022 | 0.555 ± 0.004 |
+| Words only (no punctuation, digits, markdown or line breaks), seed 42 | 0.518 | not run |
+| Same tokens in a random order, seed 42 | 0.494 | not run |
+
+The last two rows use seed 42 and the CNN only (full output, seed 42: 0.622). `words_only` and `shuffle_words` are new options in `src/data/text.py`, and the shuffle is deterministic per response.
 
 - **Self-identification does not drive the results.** Masking vendor and model names changes mean accuracy by about one point in either direction, which is inside the seed spread. This is consistent with under 1% of responses containing such names. The classifiers are not simply reading "I am ChatGPT".
 - **Formatting matters.** Stripping markdown markers, list bullets and line breaks costs the BiLSTM about 7 points and the CNN 8 to 12 points. In the seed-42 runs GPT is hurt most: its F1 falls from 0.53 to between 0.33 and 0.45 without formatting, which fits the finding that bold text separates GPT and Google from the rest.
 - **The CNN is unstable when formatting is stripped.** Its three seeds range from 0.464 to 0.548, the widest spread of any configuration; the lowest run early-stopped with its best checkpoint at epoch 2. Its mean (0.507) sits below the run that also masks names (0.542), which removes strictly more information, but that difference is within the spread and should be read as noise.
 - **Length matters.** With only the first 64 tokens, accuracy falls by about 7 points (BiLSTM) and 10 points (CNN), but 52 to 56% is still far above chance. A substantial part of the fingerprint is visible in the opening sentences.
+- **Word choice alone is still strong, and local order matters.** With every punctuation mark, digit, markdown marker and line break removed, the CNN still reaches 0.518, so word choice by itself is about 2.6 times chance. Shuffling the tokens costs 13 points (0.494). The shuffle also removes the line layout, so it is not a pure test of order. But it is lower than words only, even though it keeps the punctuation and markdown, which means the order of nearby words carries signal. This fits Section 4.3: the strongest cues are multi-word stock phrases like "Sure, here" and "In summary", which shuffling destroys.
 - **The BiLSTM may be slightly more robust.** In the three ablations that remove formatting or length its mean is 1 to 5 points above the CNN's, and it is much more stable under truncation (± 0.004 vs ± 0.022). With three seeds the gaps are comparable to the spread, so this is suggestive only.
 
 ### 4.3 Signals the classifier uses
@@ -296,7 +303,21 @@ To see which words carry the signal, we fit a logistic regression on word 1-2gra
 
 These are almost all function-word phrases and stock openers or closers, not topic words. Claude opens with "Here is..." and closes with "In summary" or "let me know"; GPT hedges with "please note", "certainly" and "as an [AI]"; Llama opens with "Sure, here..." and "just an [AI]"; Google prefers uncontracted "it is" and "a variety of". Mistral's top n-grams are generic connectives ("however", "additionally", "note"), which gives a concrete reason for its low F1: it has no strong stock phrases of its own, so its responses get absorbed into Llama, GPT and Google.
 
-Taken together, the three analyses point to the same answer for RQ4. LLM families are distinguished mainly by habitual phrasing at the start and end of a response, second by formatting habits (bold, line breaks), and hardly at all by naming themselves.
+Taken together, the analyses point to the same answer for RQ4. LLM families are distinguished by two overlapping kinds of signal, each strong on its own: habitual phrasing, especially stock openers and closers (words only: 0.518), and structure and formatting habits such as length, line breaks, bullets and bold (style features only: 0.534). Combining them gives about 0.62. Families are hardly distinguished at all by naming themselves.
+
+### 4.4 Do the conclusions hold on newer models?
+
+Era bias is our biggest data limitation (Section 1.4). As a check, we ran the same pipeline design on LMArena's 2025 release (`arena-human-preference-140k`, battles from April to July 2025) with eight current families: Claude 4, GPT-4.1/o3, Gemini 2.5, Llama 4, Mistral, Qwen 3, DeepSeek and Grok 3. We used 4,000 responses each, so chance is 12.5%. The code and results are in `extension_2025/`.
+
+| | This study (2023-24, 5 families) | 2025 check (8 families) |
+|---|---:|---:|
+| CNN / BiLSTM, output only (3 seeds) | 0.625 / 0.622 | 0.685 / 0.681 |
+| Input only (CNN) | 0.200 (chance) | 0.124 (chance) |
+| Hardest family | Mistral (F1 0.41) | Mistral (F1 0.50) |
+| Mean bold spans per response, Claude / GPT / Google | 0.01 / 0.89 / 2.07 | 2.1 / 10.2 / 23.2 |
+| Median words, Claude / GPT / Google | 164.5 / 153 / 154 | 164 / 336 / 621 |
+
+The main conclusions carry over. Output-only identification works, and is even easier relative to chance (5.4 times vs 3.1 times). The prompt alone is at chance. Mistral is the hardest family in both eras. The specific cues changed, though. Markdown use exploded in every family except Claude, whose median length did not move. Bold text used to separate Google and GPT from the rest; now its absence is what separates Claude. New cues appeared, such as typographic apostrophes (57% of GPT's apostrophes). A detector trained on one generation of models would need retraining for the next.
 
 _Not done: CNN filter-activation analysis, qualitative review of misclassified examples, within-family confusion between specific models, and learning curves over training-set size. The outline lists these as possible extensions._
 
@@ -312,6 +333,7 @@ _Not done: CNN filter-activation analysis, qualitative review of misclassified e
 
 **Modeling**
 
+- **Check that a comparison measures what you think it measures.** Our first RQ3 reading was that writing transfers worst. A same-size reference model showed that writing is simply harder for every model, and that the true cost of an unseen domain is about 4 points. Similarly, a linear model on the style features (0.41) made formatting look like a minor signal. A nonlinear model on the same features (0.53) showed it carries most of the signal.
 - **A simple baseline is essential.** TF-IDF with logistic regression matches both neural models. Without it we would have overestimated what the CNN and BiLSTM contribute.
 - **CNN versus BiLSTM.** They tie on full text. The CNN trains about four times faster per epoch; the BiLSTM has a smoother validation curve and may be slightly more robust when formatting or length is removed.
 - **Single-seed results can mislead.** Our first, single-seed ablation table showed an impossible ordering and a 12-point gap between the models that shrank to under 5 once we averaged three seeds. The same configuration varied by up to 8 points across seeds.

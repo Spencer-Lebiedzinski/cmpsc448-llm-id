@@ -13,6 +13,7 @@ import markdown
 HERE = Path(__file__).resolve().parent
 BROWSERS = [r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe",
             r"C:\Program Files\Google\Chrome\Application\chrome.exe",
+            "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
             shutil.which("msedge"), shutil.which("chrome"), shutil.which("chromium")]
 CSS = """
 @page { size: Letter; margin: 0.9in; }

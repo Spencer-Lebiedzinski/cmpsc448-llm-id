@@ -104,7 +104,7 @@ def main():
     print(f"[train] {run_name}: train={len(train)} val={len(val)} labels={labels} vocab={len(vocab)} "
           f"(encode {time.time() - t0:.1f}s)")
 
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    device = torch.device("cuda" if torch.cuda.is_available() else "mps" if torch.backends.mps.is_available() else "cpu")
     cfg["device"] = str(device)
     model = build_model(cfg, len(vocab), len(labels), vocab.pad_idx).to(device)
     cfg["n_params"] = sum(p.numel() for p in model.parameters())

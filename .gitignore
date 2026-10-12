@@ -11,3 +11,6 @@ model.pt
 vocab.json
 *.zip
 report/report.html
+
+# 2025 extension: data is rebuilt by extension_2025/src/build_dataset.py
+extension_2025/data/

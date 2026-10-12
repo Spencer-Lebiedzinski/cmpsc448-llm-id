@@ -18,6 +18,8 @@
 | n_emoji                  |    0     |   0     |    0     |    0     |     0     |
 | has_apology_refusal      |    0     |   0     |    0     |    0     |     0     |
 | mentions_vendor_or_model |    0     |   0     |    0     |    0     |     0     |
+| n_em_dash                |    0     |   0     |    0     |    0     |     0     |
+| curly_apostrophe_share   |    0     |   0     |    0     |    0     |     0     |
 
 # Mean stylometric features per family
 
@@ -39,3 +41,5 @@
 | n_emoji                  |    0.012 |    0.044 |    0.009 |    0.139 |     0.173 |
 | has_apology_refusal      |    0.117 |    0.075 |    0.034 |    0.094 |     0.042 |
 | mentions_vendor_or_model |    0.004 |    0.008 |    0.002 |    0.005 |     0.005 |
+| n_em_dash                |    0.005 |    0.02  |    0.006 |    0.001 |     0.004 |
+| curly_apostrophe_share   |    0.006 |    0.01  |    0.005 |    0.004 |     0.003 |
