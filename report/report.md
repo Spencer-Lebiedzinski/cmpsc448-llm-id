@@ -1,7 +1,7 @@
 # Who Wrote It? Identifying LLMs from Their Responses
 CMPSC 448 Midterm Project Report (Fall 2026)
 
-**Author:** Spencer Lebiedzinski (individual project)
+**Team leader:** Spencer Lebiedzinski. **Team members:** Taranveer Singh
 **Repository:** https://github.com/Spencer-Lebiedzinski/cmpsc448-llm-id
 
 ---
@@ -323,7 +323,7 @@ _Not done: CNN filter-activation analysis, qualitative review of misclassified e
 - **Reproducibility.** One command rebuilds the dataset, every run writes its config, history and metrics, and the summary table is generated from those files. Rebuilding the dataset on a second machine gave exactly the same split counts.
 **Use of LLM assistance**
 
-The course allows LLM assistance. An LLM assistant (Claude) was used to scaffold the code (data pipeline, models, training and evaluation scripts), to run the experiments, and to draft this report from the measured results. I am responsible for verifying the code and every number against `results/summary.md` and the per-run metrics files, and for understanding everything submitted.
+The course allows LLM assistance. An LLM assistant (Claude) was used to scaffold the code (data pipeline, models, training and evaluation scripts), to run the experiments, and to draft this report from the measured results. The team is responsible for verifying the code and every number against `results/summary.md` and the per-run metrics files, and for understanding everything submitted.
 
 **What we would do next**
 
